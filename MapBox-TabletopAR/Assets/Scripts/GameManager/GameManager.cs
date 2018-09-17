@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour {
     public bool GameStarted { get {return gameStarted;}}
     public bool GameRunning { get { return gameStarted; } }
     public int Score { get { return score; } }
-    public GameManager Instance { get { return instance; } }
+    public static GameManager Instance { get { return instance; } }
 
     private void Awake() {
         if (instance == null) {
