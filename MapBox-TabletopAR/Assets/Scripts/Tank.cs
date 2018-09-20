@@ -12,7 +12,7 @@ public class Tank : MonoBehaviour {
     [SerializeField] private float travelTime = 0.01f;
     [SerializeField] private float killHeight = -10.0f;
 
-    [SerializeField] private int ROTATION_STEPS = 8; //Num of rotation steps in each direction 
+    [SerializeField] private int ROTATION_STEPS = 15; //Num of rotation steps in each direction 
     private int rotateCounter;
     private RotationDir randRotDir = RotationDir.None;
 

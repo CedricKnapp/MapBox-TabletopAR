@@ -380,15 +380,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5082a91282a8e1e4e8a51bd3032f3e08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectile: {fileID: 1973613083752186, guid: 517e1bf19c06b1e4ab9e84dbe7dec8be, type: 2}
+  projectile: {fileID: 1120058088053260, guid: 925b2491b53d3204497da2fa7def2038, type: 2}
   spawnPlaceHolder: {fileID: 1349990441626076}
-  rotationAxis: {x: 0, y: 0, z: 1}
+  rotationAxis: {x: 0, y: 0, z: 0}
   fireRate: 5
   shotForce: 1500
   moveSpeed: 0.2
-  travelTime: 1
+  travelTime: 0.01
   killHeight: -10
-  ROTATION_STEPS: 158
+  ROTATION_STEPS: 15
 --- !u!114 &114644395844806482
 MonoBehaviour:
   m_ObjectHideFlags: 1
