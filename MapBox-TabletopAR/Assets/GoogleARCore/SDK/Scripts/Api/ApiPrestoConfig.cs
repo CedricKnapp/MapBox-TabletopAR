@@ -20,27 +20,75 @@
 
 namespace GoogleARCoreInternal
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Runtime.InteropServices;
     using GoogleARCore;
+    using GoogleARCoreInternal.CrossPlatform;
 
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
     Justification = "Internal")]
     [StructLayout(LayoutKind.Sequential)]
-    public struct ApiPrestoConfig
+    internal struct ApiPrestoConfig
     {
         public ApiUpdateMode UpdateMode;
         public ApiPlaneFindingMode PlaneFindingMode;
         public ApiLightEstimationMode LightEstimationMode;
+        public ApiCloudAnchorMode CloudAnchorMode;
+        public IntPtr ArPrestoAugmentedImageDatabase;
+        public ApiCameraFocusMode CameraFocusMode;
 
+        /// <summary>
+        /// Wrap an ARCoreSessionConfig in an API config.
+        /// </summary>
+        /// <param name="config">Config to wrap.</param>
         public ApiPrestoConfig(ARCoreSessionConfig config)
         {
             UpdateMode = config.MatchCameraFramerate ?
                 ApiUpdateMode.Blocking : ApiUpdateMode.LatestCameraImage;
-            PlaneFindingMode = config.EnablePlaneFinding ?
-                ApiPlaneFindingMode.Horizontal : ApiPlaneFindingMode.Disabled;
+            var planeFindingMode = ApiPlaneFindingMode.Disabled;
+            switch (config.PlaneFindingMode)
+            {
+            case DetectedPlaneFindingMode.Horizontal:
+                planeFindingMode = ApiPlaneFindingMode.Horizontal;
+                break;
+            case DetectedPlaneFindingMode.Vertical:
+                planeFindingMode = ApiPlaneFindingMode.Vertical;
+                break;
+            case DetectedPlaneFindingMode.HorizontalAndVertical:
+                planeFindingMode = ApiPlaneFindingMode.HorizontalAndVertical;
+                break;
+            default:
+                break;
+            }
+
+            PlaneFindingMode = planeFindingMode;
             LightEstimationMode = config.EnableLightEstimation ?
                 ApiLightEstimationMode.AmbientIntensity : ApiLightEstimationMode.Disabled;
+            CloudAnchorMode = config.EnableCloudAnchor ?
+                ApiCloudAnchorMode.Enabled : ApiCloudAnchorMode.Disabled;
+
+            if (config.AugmentedImageDatabase != null)
+            {
+                ArPrestoAugmentedImageDatabase = config.AugmentedImageDatabase.m_ArPrestoDatabaseHandle;
+            }
+            else
+            {
+                ArPrestoAugmentedImageDatabase = IntPtr.Zero;
+            }
+
+            switch (config.CameraFocusMode)
+            {
+                case GoogleARCore.CameraFocusMode.Fixed:
+                    CameraFocusMode = ApiCameraFocusMode.Fixed;
+                    break;
+                case GoogleARCore.CameraFocusMode.Auto:
+                    CameraFocusMode = ApiCameraFocusMode.Auto;
+                    break;
+                default:
+                    CameraFocusMode = ApiCameraFocusMode.Fixed;
+                    break;
+            }
         }
     }
 }
