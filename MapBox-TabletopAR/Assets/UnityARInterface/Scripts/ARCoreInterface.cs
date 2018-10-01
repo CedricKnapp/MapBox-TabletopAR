@@ -43,9 +43,9 @@ namespace UnityARInterface
 
 #endregion
 
-        private List<TrackedPlane> m_TrackedPlaneBuffer = new List<TrackedPlane>();
+        private List<DetectedPlane> m_DetectedPlaneBuffer = new List<DetectedPlane>();
         private ScreenOrientation m_CachedScreenOrientation;
-        private Dictionary<TrackedPlane, BoundedPlane> m_TrackedPlanes = new Dictionary<TrackedPlane, BoundedPlane>();
+        private Dictionary<DetectedPlane, BoundedPlane> m_DetectedPlanes = new Dictionary<DetectedPlane, BoundedPlane>();
         private ARCoreSession m_ARCoreSession;
         private ARCoreSessionConfig m_ARCoreSessionConfig;
         private ARBackgroundRenderer m_BackgroundRenderer;
@@ -354,12 +354,12 @@ namespace UnityARInterface
             // This is handled for us by the ARCoreBackgroundRenderer
         }
 
-        private bool PlaneUpdated(TrackedPlane tp, BoundedPlane bp)
+        private bool PlaneUpdated(DetectedPlane dp, BoundedPlane bp)
         {
-            var tpExtents = new Vector2(tp.ExtentX, tp.ExtentZ);
-            var extents = Vector2.Distance(tpExtents, bp.extents) > 0.005f;
-            var rotation = tp.CenterPose.rotation != bp.rotation;
-            var position = Vector2.Distance(tp.CenterPose.position, bp.center) > 0.005f;
+            var dpExtents = new Vector2(dp.ExtentX, dp.ExtentZ);
+            var extents = Vector2.Distance(dpExtents, bp.extents) > 0.005f;
+            var rotation = dp.CenterPose.rotation != bp.rotation;
+            var position = Vector2.Distance(dp.CenterPose.position, bp.center) > 0.005f;
             return (extents || rotation || position);
         }
 
@@ -375,26 +375,26 @@ namespace UnityARInterface
 
             if(m_ARCoreSessionConfig.EnablePlaneFinding)
             {
-                Session.GetTrackables<TrackedPlane>(m_TrackedPlaneBuffer, TrackableQueryFilter.All);
-                foreach (var trackedPlane in m_TrackedPlaneBuffer)
+                Session.GetTrackables<DetectedPlane>(m_DetectedPlaneBuffer, TrackableQueryFilter.All);
+                foreach (var detectedPlane in m_DetectedPlaneBuffer)
                 {
                     BoundedPlane boundedPlane;
-                    if (m_TrackedPlanes.TryGetValue(trackedPlane, out boundedPlane))
+                    if (m_DetectedPlanes.TryGetValue(detectedPlane, out boundedPlane))
                     {
                         // remove any subsumed planes
-                        if (trackedPlane.SubsumedBy != null)
+                        if (detectedPlane.SubsumedBy != null)
                         {
                             OnPlaneRemoved(boundedPlane);
-                            m_TrackedPlanes.Remove(trackedPlane);
+                            m_DetectedPlanes.Remove(detectedPlane);
                         }
                         // update any planes with changed extents
-                        else if (PlaneUpdated(trackedPlane, boundedPlane))
+                        else if (PlaneUpdated(detectedPlane, boundedPlane))
                         {
-                            boundedPlane.center = trackedPlane.CenterPose.position;
-                            boundedPlane.rotation = trackedPlane.CenterPose.rotation;
-                            boundedPlane.extents.x = trackedPlane.ExtentX;
-                            boundedPlane.extents.y = trackedPlane.ExtentZ;
-                            m_TrackedPlanes[trackedPlane] = boundedPlane;
+                            boundedPlane.center = detectedPlane.CenterPose.position;
+                            boundedPlane.rotation = detectedPlane.CenterPose.rotation;
+                            boundedPlane.extents.x = detectedPlane.ExtentX;
+                            boundedPlane.extents.y = detectedPlane.ExtentZ;
+                            m_DetectedPlanes[detectedPlane] = boundedPlane;
                             OnPlaneUpdated(boundedPlane);
                         }
                     }
@@ -404,30 +404,30 @@ namespace UnityARInterface
                         boundedPlane = new BoundedPlane()
                         {
                             id = Guid.NewGuid().ToString(),
-                            center = trackedPlane.CenterPose.position,
-                            rotation = trackedPlane.CenterPose.rotation,
-                            extents = new Vector2(trackedPlane.ExtentX, trackedPlane.ExtentZ)
+                            center = detectedPlane.CenterPose.position,
+                            rotation = detectedPlane.CenterPose.rotation,
+                            extents = new Vector2(detectedPlane.ExtentX, detectedPlane.ExtentZ)
                         };
 
-                        m_TrackedPlanes.Add(trackedPlane, boundedPlane);
+                        m_DetectedPlanes.Add(detectedPlane, boundedPlane);
                         OnPlaneAdded(boundedPlane);
                     }
                 }
 
-                // Check for planes that were removed from the tracked plane list
-                List<TrackedPlane> planesToRemove = new List<TrackedPlane>();
-                foreach (var kvp in m_TrackedPlanes)
+                // Check for planes that were removed from the detected plane list
+                List<DetectedPlane> planesToRemove = new List<DetectedPlane>();
+                foreach (var kvp in m_DetectedPlanes)
                 {
-                    var trackedPlane = kvp.Key;
-                    if (!m_TrackedPlaneBuffer.Exists(x => x == trackedPlane))
+                    var detectedPlane = kvp.Key;
+                    if (!m_DetectedPlaneBuffer.Exists(x => x == detectedPlane))
                     {
                         OnPlaneRemoved(kvp.Value);
-                        planesToRemove.Add(trackedPlane);
+                        planesToRemove.Add(detectedPlane);
                     }
                 }
 
                 foreach (var plane in planesToRemove)
-                    m_TrackedPlanes.Remove(plane);
+                    m_DetectedPlanes.Remove(plane);
 
             }
 

@@ -75,7 +75,7 @@ namespace GoogleARCoreInternal
             ApiTrackableType trackableType = m_NativeSession.TrackableApi.GetType(nativeHandle);
             if (trackableType == ApiTrackableType.Plane)
             {
-                result = new TrackedPlane(nativeHandle, m_NativeSession);
+                result = new DetectedPlane(nativeHandle, m_NativeSession);
             }
             else if (trackableType == ApiTrackableType.Point)
             {
