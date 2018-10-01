@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="CloudAnchorController.cs" company="Google">
 //
 // Copyright 2018 Google Inc. All Rights Reserved.
@@ -202,6 +202,15 @@ namespace GoogleARCore.Examples.CloudAnchors
 
                 // Save cloud anchor.
                 _HostLastPlacedAnchor();
+            }
+        }
+
+        /// <summary>
+        /// Handles a user intent to enter a mode to change Scenes
+        /// </summary>
+        public void OnEnterSceneLoadModeClick(int SceneIndex){ 
+            if(m_CurrentMode == ApplicationMode.Ready) {
+                UIController.SceneLoader(SceneIndex);
             }
         }
 

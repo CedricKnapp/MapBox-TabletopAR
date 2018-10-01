@@ -23,6 +23,7 @@ namespace GoogleARCore.Examples.CloudAnchors
     using System.Net;
     using UnityEngine;
     using UnityEngine.UI;
+    using UnityEngine.SceneManagement;
 
     /// <summary>
     /// Controller managing UI for the Cloud Anchors Example.
@@ -55,6 +56,11 @@ namespace GoogleARCore.Examples.CloudAnchors
         public Button ResolveAnchorModeButton;
 
         /// <summary>
+        /// The Load AR Tabletop button.
+        /// </summary>
+        public Button LoadARTabletopButton;
+
+        /// <summary>
         /// The root for the input interface.
         /// </summary>
         public GameObject InputRoot;
@@ -82,6 +88,13 @@ namespace GoogleARCore.Examples.CloudAnchors
             IPAddressText.text = "My IP Address: " + _GetDeviceIpAddress();
         }
 
+        /// <summary> 
+        /// Loads the "TabletopAR" Scene on button press
+        /// </summary>
+        public void SceneLoader(int SceneIndex) {
+            SceneManager.LoadScene(SceneIndex);
+        }
+
         /// <summary>
         /// Shows UI for application "Ready Mode".
         /// </summary>
@@ -91,6 +104,8 @@ namespace GoogleARCore.Examples.CloudAnchors
             HostAnchorModeButton.interactable = true;
             ResolveAnchorModeButton.GetComponentInChildren<Text>().text = "Resolve";
             ResolveAnchorModeButton.interactable = true;
+            LoadARTabletopButton.GetComponentInChildren<Text>().text = "Load AR Tabletop";
+            LoadARTabletopButton.interactable = true;
             SnackbarText.text = "Please select Host or Resolve to continue";
             InputRoot.SetActive(false);
         }
