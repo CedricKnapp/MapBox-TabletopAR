@@ -7,7 +7,7 @@ Assets/AssetStoreTools*
 
 # ARCore Project Settings(To not include Google Cloud API key)
 
-[Pp]rojectSettings/ARCoreProjectSettings.json
+MapBox-TabletopAR/ProjectSettings/ARCoreProjectSettings.json
 
 
 # Visual Studio cache directory
