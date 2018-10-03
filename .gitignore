@@ -5,6 +5,11 @@
 [Bb]uilds/
 Assets/AssetStoreTools*
 
+# ARCore Project Settings(To not include Google Cloud API key)
+
+[Pp]rojectSettings/ARCoreProjectSettings.json
+
+
 # Visual Studio cache directory
 .vs/
 
